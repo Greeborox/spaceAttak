@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>SPACE ATTACK - www.jsdn.pl js.n00b</title>
+	<style>
+		body {
+			overflow: hidden;
+		}
+		h1 {
+			font: impact;
+			display: block;
+			width: 600px;
+			background: #3360F2;
+			margin: 0px;
+			padding: 10px;
+			margin-left: 5px;
+			text-align: center;
+			text-shadow: 1px 1px #333;
+		}
+
+		canvas {
+			position: absolute;
+			border: 10px solid #3360F2;
+			margin-left: 5px;
+			border-top: 0px;
+		}
+
+		canvas#background {
+			z-index: -1;
+			background-color: black;
+		}
+
+		canvas#game {
+			z-index: 1;
+		}
+
+	</style>
+</head>
+<body onload="startSpaceAttack()">
+<h1>SPACE ATTACK</h1>
+<canvas width="600px" height="550px" id="background"></canvas>
+<canvas width="600px" height="550px" id="game"></canvas>
+<script type="text/javascript" src="JS/bgObj.js"></script>
+<script type="text/javascript" src="JS/spaceAttack.js"></script>
+</body>
+</html>
