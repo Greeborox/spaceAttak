@@ -78,7 +78,7 @@ var SpaceAttack = function(canvas, background, bgObj){
 			}
 		};
 		this.changeState = function(state) {
-			if(this.returnState()) {
+			if(this.returnState) {
 				if(this.returnState.leave){
 					this.returnState.leave();
 				}
@@ -90,7 +90,7 @@ var SpaceAttack = function(canvas, background, bgObj){
 			this.stateStack.push(state);
 		};
 		this.removeState = function() {
-			if(this.returnState()) {
+			if(this.returnState) {
 				if(this.returnState.leave){
 					this.returnState.leave();
 				}
@@ -140,6 +140,11 @@ var SpaceAttack = function(canvas, background, bgObj){
 
 	this.GameState = function(game){
 		var ctx = game.gameBoard.getContext("2d");
+		this.rockets = [];
+		this.aliens = [];
+		this.alienTillSpawn = 1;
+		this.alienSpawnTime = 1.4;
+		//objects
 		this.Ship = function(){
 			this.size = 60;
 			this.speed = 250;
@@ -157,7 +162,6 @@ var SpaceAttack = function(canvas, background, bgObj){
 		this.Rocket = function(x){
 			this.size = 30;
 			this.speed = 500;
-			this.type = "rocket";
 			this.x = x;
 			this.y = game.config.height - 80;
 			this.rocketPic = new Image();
@@ -166,19 +170,30 @@ var SpaceAttack = function(canvas, background, bgObj){
 				ctx.drawImage(this.rocketPic, this.x, this.y)
 			};
 		};
-		this.actors = [];
-		this.fireRocket = function(x){
-			this.actors.push(new this.Rocket(x))
+		this.Alien = function(x){
+			this.size = 60;
+			this.speed = 200;
+			this.x= x;
+			this.y = -60;
+			this.alienPic = new Image();
+			this.alienPic.src = game.config.alienPicSrc;
+			this.draw = function() {
+				ctx.drawImage(this.alienPic, this.x, this.y)
+			};
 		};
+		//main methods
 		this.enter = function(){
 			game.pressedKeys = {};
 			this.ship = new this.Ship
-			this.actors.push(this.ship);
 		};
 		this.draw = function(){
 			ctx.clearRect(0,0, game.config.width, game.config.height);
-			for (var i = 0; i < this.actors.length; i++) {
-				this.actors[i].draw();
+			this.ship.draw();
+			for (var i = 0; i < this.rockets.length; i++) {
+				this.rockets[i].draw();
+			}
+			for (var i = 0; i < this.aliens.length; i++) {
+				this.aliens[i].draw();
 			}
 		};
 		this.update = function(){
@@ -202,13 +217,21 @@ var SpaceAttack = function(canvas, background, bgObj){
 				game.addState(game.gameStates.pauseState)
 			}
 			this.updateRockets();
+			this.updateAliens();
 			this.checkShipCannons();
-
+			this.spawnAlien();
+			this.checkCollisions();
+		};
+		//rocket methods
+		this.fireRocket = function(x){
+			this.rockets.push(new this.Rocket(x))
+			console.log(this.rockets.length);
 		};
 		this.updateRockets = function(){
-			for(var i = 0;i<this.actors.length;i++) {
-				if(this.actors[i].type === "rocket") {
-					this.actors[i].y -= this.actors[i].speed * 1/game.config.fps;
+			for(var i = 0;i<this.rockets.length;i++) {
+				this.rockets[i].y -= this.rockets[i].speed * 1/game.config.fps;
+				if(this.rockets[i].y <= -40){
+					this.rockets.splice(i,1);
 				}
 			}
 		};
@@ -221,6 +244,37 @@ var SpaceAttack = function(canvas, background, bgObj){
 				}
 			}
 		};
+		//alien methods
+		this.spawnAlien = function(){
+			if(this.alienTillSpawn <= 0) {
+				var x = Math.floor(Math.random()*(game.config.width-60))
+				this.aliens.push(new this.Alien(x));
+				this.alienTillSpawn = this.alienSpawnTime;
+				console.log("alien incoming!")
+			} else {
+				this.alienTillSpawn -= 1/game.config.fps
+			}
+		};
+		this.updateAliens = function() {
+			for(var i = 0;i<this.aliens.length;i++) {
+				this.aliens[i].y += this.aliens[i].speed * 1/game.config.fps;
+			}
+		};
+		//collision method
+		this.checkCollisions = function() {
+			for(var i = 0;i<this.rockets.length;i++) {
+				var rocket = this.rockets[i];
+				for(var j = 0;j<this.aliens.length;j++) {
+					var alien = this.aliens[j];
+					if(rocket.x >= alien.x && rocket.x+rocket.size <= alien.x+alien.size){
+						if(rocket.y >= alien.y && rocket.y+rocket.size <= alien.y+alien.size){
+							this.aliens.splice(j,1);
+							this.rockets.splice(i,1);
+						}
+					} 
+				}
+			}
+		}
 	};
 
 	this.PauseState = function(game){
