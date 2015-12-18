@@ -266,8 +266,8 @@ var SpaceAttack = function(canvas, background, bgObj){
 				var rocket = this.rockets[i];
 				for(var j = 0;j<this.aliens.length;j++) {
 					var alien = this.aliens[j];
-					if(rocket.x >= alien.x && rocket.x+rocket.size <= alien.x+alien.size){
-						if(rocket.y >= alien.y && rocket.y+rocket.size <= alien.y+alien.size){
+					if(rocket.x >= alien.x && rocket.x <= alien.x+alien.size){
+						if(rocket.y >= alien.y && rocket.y <= alien.y+alien.size){
 							this.aliens.splice(j,1);
 							this.rockets.splice(i,1);
 						}
