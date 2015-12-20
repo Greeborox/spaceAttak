@@ -316,16 +316,16 @@ var SpaceAttack = function(canvas, background, bgObj){
 			}
 			//drawing UI
 			ctx.font="20px Arial";
-	    ctx.fillStyle = '#ffffff';
-	    ctx.textAlign = "left";
-	    ctx.fillText("score: "+game.config.score, 10, 20);
-	    ctx.fillText("level: "+game.config.level, 10, 38);
-	    for(i=1;i<=game.config.lives;i++){
+			ctx.fillStyle = '#ffffff';
+			ctx.textAlign = "left";
+			ctx.fillText("score: "+game.config.score, 10, 20);
+			ctx.fillText("level: "+game.config.level, 10, 38);
+			for(i=1;i<=game.config.lives;i++){
 				ctx.drawImage(this.ship.shipPic, 0, 0, 60, 60, game.config.width-(15*i), 5, 15, 15);
-	    };
-	    ctx.textAlign = "right";
-	    ctx.font="10px Arial";
-	    ctx.fillText("aliens left: "+this.aliensLeft, game.config.width-10, game.config.height - 10);
+			};
+			ctx.textAlign = "right";
+			ctx.font="10px Arial";
+			ctx.fillText("aliens left: "+this.aliensLeft, game.config.width-10, game.config.height - 10);
 		};
 		this.update = function(){
 			this.aliensLeft = game.config.toKill-this.aliensKilled;
@@ -556,6 +556,8 @@ var SpaceAttack = function(canvas, background, bgObj){
 		};
 	};
 
+	// game state end
+
 	this.PauseState = function(game){
 		var ctx = game.gameBoard.getContext("2d");
 		this.draw = function(){
@@ -579,13 +581,13 @@ var SpaceAttack = function(canvas, background, bgObj){
 		this.draw = function(){
 			ctx.clearRect(0,0, game.config.width, game.config.height);
 			ctx.font="40px Arial";
-	    ctx.fillStyle = '#ffffff';
-	    ctx.textBaseline="center";
-	    ctx.textAlign="center";
-	    ctx.fillText("GAME OVER", game.config.width / 2, game.config.height/2 - 80);
-	    ctx.font="23px Arial";
-	    ctx.fillText("Aliens have invaded the Earth :(", game.config.width / 2, game.config.height/2-50);
-	    ctx.fillText("Press 'Space' to continue.", game.config.width / 2, game.config.height/2);
+			ctx.fillStyle = '#ffffff';
+			ctx.textBaseline="center";
+			ctx.textAlign="center";
+			ctx.fillText("GAME OVER", game.config.width / 2, game.config.height/2 - 80);
+			ctx.font="23px Arial";
+			ctx.fillText("Aliens have invaded the Earth :(", game.config.width / 2, game.config.height/2-50);
+			ctx.fillText("Press 'Space' to continue.", game.config.width / 2, game.config.height/2);
 		};
 		this.enter = function(){
 			game.config.level = 1;
